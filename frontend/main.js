@@ -1,16 +1,20 @@
-document.getElementById("signUpButton").addEventListener("submit", (e) => {
+document.getElementById("signUpForm").addEventListener("submit", (e) => {
   e.preventDefault();
   console.log("button clicked");
-  const username = document.getElementById("signUpUsername");
-  const mail = document.getElementById("signUpMail");
-  const password = document.getElementById("signUpPassword");
-  fetch("backend/user/signup", {
+  const username = document.getElementById("signUpUsername").value;
+  const mail = document.getElementById("signUpMail").value;
+  const password = document.getElementById("signUpPassword").value;
+  console.log(username, mail, password);
+  fetch("http://localhost:4000/user/signup", {
     method: "POST",
-    body: {
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
       username: username,
       mail: mail,
       password: password,
-    },
+    }),
   }).then((response) => {
     if (!response.ok) {
       throw new Error("Network response is not Okay");
@@ -18,3 +22,5 @@ document.getElementById("signUpButton").addEventListener("submit", (e) => {
     console.log(response);
   });
 });
+
+document.addEventListener("DOMContentLoaded", () => {});
