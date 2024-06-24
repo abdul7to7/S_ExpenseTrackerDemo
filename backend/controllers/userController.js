@@ -16,10 +16,13 @@ exports.userSignUp = (req, res, next) => {
 
 exports.login = (req, res, next) => {
   User.findOne({ where: { mail: req.body.mail, password: req.body.password } })
-    .then(() => {
+    .then((user) => {
+      if (!user) {
+        return res.status(404).json({ message: "user not found" });
+      }
       return res.status(201).json({ message: "login success" });
     })
     .catch(() => {
-      return res.json(404).json({ message: "user not found" });
+      return res.json(500).json({ message: `error occured ${err.message}` });
     });
 };

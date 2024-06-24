@@ -15,7 +15,8 @@ app.use("/", (req, res) => {
 });
 
 sequelize
-  .sync({ force: true })
+  //   .sync({ force: true })
+  .sync()
   .then(() => {
     app.listen(4000);
   })
