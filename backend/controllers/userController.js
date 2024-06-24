@@ -13,3 +13,13 @@ exports.userSignUp = (req, res, next) => {
       return res.json({ message: `error occured ${err.message}` });
     });
 };
+
+exports.login = (req, res, next) => {
+  User.findOne({ where: { mail: req.body.mail, password: req.body.password } })
+    .then(() => {
+      return res.status(201).json({ message: "login success" });
+    })
+    .catch(() => {
+      return res.json(404).json({ message: "user not found" });
+    });
+};
