@@ -23,7 +23,7 @@ document.getElementById("signUpForm")?.addEventListener("submit", (e) => {
   });
 });
 
-document.getElementById("loginForm").addEventListener("submit", (e) => {
+document.getElementById("loginForm")?.addEventListener("submit", (e) => {
   e.preventDefault();
   console.log("button clicked");
   const mail = document.getElementById("loginMail").value;
