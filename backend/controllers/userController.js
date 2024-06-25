@@ -1,3 +1,4 @@
+const generateToken = require("../middleware/authGenerate");
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
 
@@ -13,14 +14,16 @@ exports.userSignUp = async (req, res, next) => {
       password: hashed,
     });
     if (user) {
-      req.session.user = {
-        id: user.id,
-      };
+      const token = generateToken({ id: user.id, username: user.username });
       return (
         res
           // .redirect("/expenseForm.html");
           .status(201)
-          .json({ success: true, message: "user succesfully created" })
+          .json({
+            success: true,
+            message: "user succesfully created",
+            token: token,
+          })
       );
     } else {
       return res
@@ -48,16 +51,14 @@ exports.login = async (req, res, next) => {
     if (!result) {
       return res.status(401).json({ message: "password not matched" });
     }
-    req.session.user = {
-      id: user.id,
-    };
 
+    const token = generateToken({ id: user.id, username: user.username });
     return (
       res
         // .status(302)
         // .redirect("/expenseForm.html");
         .status(201)
-        .json({ success: true, user: user })
+        .json({ success: true, token: token })
     );
   } catch (e) {
     res.status(500).json({ success: false, message: "something went wrong" });

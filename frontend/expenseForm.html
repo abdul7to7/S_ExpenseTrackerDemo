@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Expenses</title>
+  </head>
+  <link rel="stylesheet" href="./style.css" />
+  <body>
+    <div class="mainContainer">
+      <div class="formContainer">
+        <form class="signUpForm" id="expenseForm">
+          <div class="flexSpaceBetween">
+            <label for="expenseAmount">Amount</label>
+            <input
+              type="number"
+              name="expenseAmount"
+              id="expenseAmount"
+              required
+            />
+          </div>
+          <div class="flexSpaceBetween">
+            <label for="expenseDesc">Description</label>
+            <input type="text" name="expenseDesc" id="expenseDesc" required />
+          </div>
+          <div class="flexSpaceBetween">
+            <label for="expenseCat">Description</label>
+            <select name="expenseCat" id="expenseCat" required>
+              <option value="A">A</option>
+              <option value="B">B</option>
+              <option value="C">C</option>
+              <option value="D">D</option>
+            </select>
+          </div>
+          <div class="flexCenter">
+            <button type="submit" id="expenseSubmitButton">Add Expense</button>
+          </div>
+        </form>
+      </div>
+      <div class="expenseContainer">
+        <ul id="expense-list"></ul>
+      </div>
+    </div>
+    <script src="./expenseForm.js"></script>
+  </body>
+</html>
