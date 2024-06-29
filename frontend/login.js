@@ -15,13 +15,15 @@ document.getElementById("loginForm")?.addEventListener("submit", (e) => {
     }),
   })
     .then((response) => {
-      if (!response.ok) {
-        window.location.href = "/ExpenseTrackerDemo/frontend/login.html";
-      }
       return response.json();
     })
     .then((response) => {
+      if (response.success == false) {
+        window.location.href = "./login.html";
+        // add msg to ui here
+        return;
+      }
       localStorage.setItem("token", response.token);
-      window.location.href = "/ExpenseTrackerDemo/frontend/expenseForm.html";
+      window.location.href = "./expenseForm.html";
     });
 });

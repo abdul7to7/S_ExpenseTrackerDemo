@@ -7,19 +7,12 @@ exports.getAllExpenses = async (req, res, next) => {
   } catch (e) {
     return res
       .status(500)
-      .json({ success: false, message: "Something went wrong" });
+      .json({ success: false, message: `Something went wrong ${e}` });
   }
 };
 
 exports.addExpense = async (req, res, next) => {
   try {
-    // const userId = req.session.user.id;
-    // console.log(req.session);
-    // if (!userId) {
-    //   return res
-    //     .status(401)
-    //     .json({ success: false, message: "unauthorized access" });
-    // }
     const expense = await Expense.create({
       amount: req.body.amount,
       description: req.body.description,
@@ -31,11 +24,15 @@ exports.addExpense = async (req, res, next) => {
         .status(500)
         .json({ success: false, message: "something went wrong" });
     }
-    return res
-      .status(201)
-      .json({ sucess: true, message: "expense created successfully" });
+    return res.status(201).json({
+      sucess: true,
+      message: "expense created successfully",
+      expense: expense,
+    });
   } catch (e) {
-    return res.status(500).json({ success: false, message: `error :${e}` });
+    return res
+      .status(500)
+      .json({ success: false, message: `Something went wrong :${e}` });
   }
 };
 

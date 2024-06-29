@@ -17,13 +17,15 @@ document.getElementById("signUpForm")?.addEventListener("submit", (e) => {
     }),
   })
     .then((response) => {
-      if (!response.ok) {
-        throw new Error("Server response is not Okay");
-      }
       return response.json();
     })
     .then((response) => {
+      if (response.suceess == false) {
+        window.location.reload();
+        //send msg here
+        return;
+      }
       localStorage.setItem("token", response.token);
-      window.location.href = "/ExpenseTrackerDemo/frontend/expenseForm.html";
+      window.location.href = "./expenseForm.html";
     });
 });

@@ -49,7 +49,9 @@ exports.login = async (req, res, next) => {
     const result = await bcrypt.compare(req.body.password, user.password);
 
     if (!result) {
-      return res.status(401).json({ message: "password not matched" });
+      return res
+        .status(401)
+        .json({ success: false, message: "password not matched" });
     }
 
     const token = generateToken({ id: user.id, username: user.username });
