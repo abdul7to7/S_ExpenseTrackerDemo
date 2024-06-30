@@ -1,9 +1,18 @@
 const Expense = require("../models/Expense");
+const User = require("../models/User");
+const sequelize = require("../util/db");
 
 exports.getAllExpenses = async (req, res, next) => {
   try {
     const expenses = await Expense.findAll({ where: { userId: req.user.id } });
-    return res.status(201).json({ success: true, expenses: expenses });
+    return res.status(201).json({
+      success: true,
+      expenses: expenses,
+      user: {
+        username: req.user.username,
+        isPremium: req.user.isPremium,
+      },
+    });
   } catch (e) {
     return res
       .status(500)
@@ -49,4 +58,21 @@ exports.deleteExpense = async (req, res, next) => {
       .status(500)
       .json({ success: false, message: `Something went wrong ${e}` });
   }
+};
+exports.getLeaderboard = async (req, res, next) => {
+  const usersWithExpenses = await User.findAll({
+    attributes: [
+      "username",
+      [sequelize.fn("COUNT", sequelize.col("Expenses.id")), "totalExpenses"],
+    ],
+    include: [
+      {
+        model: Expense,
+        attributes: [],
+      },
+    ],
+    group: ["User.id"],
+    order: [[sequelize.literal("totalExpenses"), "DESC"]],
+  });
+  res.send({ usersWithExpenses: usersWithExpenses });
 };

@@ -14,7 +14,11 @@ exports.userSignUp = async (req, res, next) => {
       password: hashed,
     });
     if (user) {
-      const token = generateToken({ id: user.id, username: user.username });
+      const token = generateToken({
+        id: user.id,
+        username: user.username,
+        isPremium: user.isPremium,
+      });
       return (
         res
           // .redirect("/expenseForm.html");
@@ -54,7 +58,11 @@ exports.login = async (req, res, next) => {
         .json({ success: false, message: "password not matched" });
     }
 
-    const token = generateToken({ id: user.id, username: user.username });
+    const token = generateToken({
+      id: user.id,
+      username: user.username,
+      isPremium: user.isPremium,
+    });
     return (
       res
         // .status(302)

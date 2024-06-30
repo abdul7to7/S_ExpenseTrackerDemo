@@ -32,6 +32,7 @@ Order.belongsTo(User);
 
 sequelize
   // .sync({ force: true })
+  // .sync({ alter: true })
   .sync()
   .then(() => {
     app.listen(4000);
