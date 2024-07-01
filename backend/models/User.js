@@ -20,5 +20,10 @@ const User = sequelize.define("user", {
     nullAllowed: false,
     defaultValue: false,
   },
+  totalExpense: {
+    type: Sequelize.DOUBLE,
+    nullAllowed: false,
+    defaultValue: 0,
+  },
 });
 module.exports = User;

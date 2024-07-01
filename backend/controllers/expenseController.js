@@ -1,3 +1,4 @@
+const { Sequelize } = require("sequelize");
 const Expense = require("../models/Expense");
 const User = require("../models/User");
 const sequelize = require("../util/db");
@@ -28,6 +29,10 @@ exports.addExpense = async (req, res, next) => {
       category: req.body.category,
       userId: req.user.id,
     });
+    await User.increment(
+      { totalExpense: req.body.amount },
+      { where: { id: req.user.id } }
+    );
     if (!expense) {
       return res
         .status(500)
@@ -47,9 +52,15 @@ exports.addExpense = async (req, res, next) => {
 
 exports.deleteExpense = async (req, res, next) => {
   try {
+    const expense = await Expense.findByPk(req.params.expense_id);
     await Expense.destroy({
       where: { id: req.params.expense_id, userId: req.user.id },
     });
+    await User.increment(
+      { totalExpense: -expense.amount },
+      { where: { id: req.user.id } }
+    );
+    console.log("deleted expense-->", expense);
     return res
       .status(201)
       .json({ success: true, message: "deleted successfully" });
@@ -61,18 +72,8 @@ exports.deleteExpense = async (req, res, next) => {
 };
 exports.getLeaderboard = async (req, res, next) => {
   const usersWithExpenses = await User.findAll({
-    attributes: [
-      "username",
-      [sequelize.fn("COUNT", sequelize.col("Expenses.id")), "totalExpenses"],
-    ],
-    include: [
-      {
-        model: Expense,
-        attributes: [],
-      },
-    ],
-    group: ["User.id"],
-    order: [[sequelize.literal("totalExpenses"), "DESC"]],
+    attributes: ["username", "totalExpense"],
+    order: [["totalExpense", "DESC"]],
   });
   res.send({ usersWithExpenses: usersWithExpenses });
 };
