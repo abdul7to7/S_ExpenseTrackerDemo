@@ -27,3 +27,24 @@ document.getElementById("loginForm")?.addEventListener("submit", (e) => {
       window.location.href = "./expenseForm.html";
     });
 });
+
+document.getElementById("forget-password").addEventListener("click", () => {
+  document.getElementById("forget-password-form").style.display = "block";
+});
+
+document
+  .getElementById("forget-password-form")
+  ?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const mail = document.getElementById("forget-password-mail").value;
+    fetch("http://localhost:4000/user/forgot-password", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        mail: mail,
+      }),
+    });
+    console.log(mail);
+  });

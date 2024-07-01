@@ -2,6 +2,12 @@ const generateToken = require("../middleware/authGenerate");
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
 
+const SibApiV3Sdk = require("sib-api-v3-sdk");
+const defaultClient = SibApiV3Sdk.ApiClient.instance;
+const apiKey = defaultClient.authentications["api-key"];
+apiKey.apiKey = process.env.SDK_API_KEY;
+const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
+
 exports.userSignUp = async (req, res, next) => {
   try {
     const hashed = await bcrypt.hash(req.body.password, 10);
@@ -72,5 +78,37 @@ exports.login = async (req, res, next) => {
     );
   } catch (e) {
     res.status(500).json({ success: false, message: "something went wrong" });
+  }
+};
+
+exports.forgotPassword = async (req, res, next) => {
+  console.log(req.body.mail);
+  const sendSmtpEmail = {
+    to: [
+      {
+        email: "abdul7to7@gmail.com",
+        // email: req.body.mail,
+        // name: 'User Name' // Optionally, you can add a name
+      },
+    ],
+    sender: {
+      email: "abdul7to7@gmail.com",
+      name: "Expense_Demo",
+    },
+    subject: "Password Reset Request",
+    htmlContent: `
+      <html>
+      <body>
+        <p>You requested a password reset. Click the link below to reset your password:</p>
+        <a href="/">Reset Password</a>
+      </body>
+      </html>`,
+  };
+
+  try {
+    const response = await apiInstance.sendTransacEmail(sendSmtpEmail);
+    console.log("Email sent successfully:", response);
+  } catch (error) {
+    console.error("Error sending email:", error);
   }
 };
