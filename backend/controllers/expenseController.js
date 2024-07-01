@@ -22,28 +22,31 @@ exports.getAllExpenses = async (req, res, next) => {
 };
 
 exports.addExpense = async (req, res, next) => {
+  const t = await sequelize.transaction();
   try {
-    const expense = await Expense.create({
-      amount: req.body.amount,
-      description: req.body.description,
-      category: req.body.category,
-      userId: req.user.id,
-    });
+    const expense = await Expense.create(
+      {
+        amount: req.body.amount,
+        description: req.body.description,
+        category: req.body.category,
+        userId: req.user.id,
+      },
+      {
+        transaction: t,
+      }
+    );
     await User.increment(
       { totalExpense: req.body.amount },
-      { where: { id: req.user.id } }
+      { where: { id: req.user.id }, transaction: t }
     );
-    if (!expense) {
-      return res
-        .status(500)
-        .json({ success: false, message: "something went wrong" });
-    }
+    await t.commit();
     return res.status(201).json({
       sucess: true,
       message: "expense created successfully",
       expense: expense,
     });
   } catch (e) {
+    await t.rollback();
     return res
       .status(500)
       .json({ success: false, message: `Something went wrong :${e}` });
@@ -51,20 +54,24 @@ exports.addExpense = async (req, res, next) => {
 };
 
 exports.deleteExpense = async (req, res, next) => {
+  const t = await sequelize.transaction();
   try {
     const expense = await Expense.findByPk(req.params.expense_id);
     await Expense.destroy({
       where: { id: req.params.expense_id, userId: req.user.id },
+      transaction: t,
     });
     await User.increment(
       { totalExpense: -expense.amount },
-      { where: { id: req.user.id } }
+      { where: { id: req.user.id }, transaction: t }
     );
     console.log("deleted expense-->", expense);
+    await t.commit();
     return res
       .status(201)
       .json({ success: true, message: "deleted successfully" });
   } catch (e) {
+    t.rollback();
     return res
       .status(500)
       .json({ success: false, message: `Something went wrong ${e}` });
