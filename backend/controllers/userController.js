@@ -137,6 +137,7 @@ exports.getResetPassword = async (req, res, next) => {
 
 exports.postResetPassword = async (req, res, next) => {
   const fp = await ForgotPassword.findOne({ where: { id: req.body.uuid } });
+  await fp.update({ isActive: false });
   const hashed = await bcrypt.hash(req.body.password, 10);
   await User.update({ password: hashed }, { where: { id: fp.userId } });
   res.send("password reset successfully");
