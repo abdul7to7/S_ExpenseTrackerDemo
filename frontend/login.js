@@ -19,7 +19,7 @@ document.getElementById("loginForm")?.addEventListener("submit", (e) => {
     })
     .then((response) => {
       if (response.success == false) {
-        window.location.href = "./login.html";
+        // window.location.href = "./login.html";
         // add msg to ui here
         return;
       }

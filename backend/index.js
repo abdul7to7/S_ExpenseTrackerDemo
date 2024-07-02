@@ -4,6 +4,7 @@ const cors = require("cors");
 const app = express();
 require("dotenv").config();
 
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cors());
 
@@ -15,6 +16,7 @@ const User = require("./models/User");
 const Expense = require("./models/Expense");
 const authenticate = require("./middleware/authenticate");
 const Order = require("./models/Order");
+const ForgotPassword = require("./models/ForgotPassword");
 
 app.use("/user", userRoutes);
 app.use("/expense", authenticate, expenseRoutes);
@@ -29,6 +31,9 @@ Expense.belongsTo(User);
 
 User.hasMany(Order);
 Order.belongsTo(User);
+
+User.hasMany(ForgotPassword);
+ForgotPassword.belongsTo(User);
 
 sequelize
   // .sync({ force: true })
