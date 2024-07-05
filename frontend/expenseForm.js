@@ -90,13 +90,25 @@ document
     while (leaderboardList.firstChild) {
       leaderboardList.removeChild(leaderboardList.firstChild);
     }
+    const heading = document.createElement("li");
+    heading.innerHTML = "<h3>Most Expenses</h3>";
+    heading.style.marginBottom = "5px";
+    leaderboardList.append(heading);
+    // leaderboardList.append(document.createElement("hr"));
     let data = await getLeaderboard();
     data.usersWithExpenses.forEach((item) => {
       const li = document.createElement("li");
-      li.textContent = `${item.username} have total ${item.totalExpense} Expenses`;
+      li.innerHTML = `<b>${item.username}</b> have total <b>${item.totalExpense}</b> Expenses`;
+      li.style.fontSize = "14px";
       leaderboardList.append(li);
     });
     console.log(data);
+  });
+
+document
+  .getElementById("dayToDayExpenseBtn")
+  ?.addEventListener("click", (e) => {
+    document.location = "./dayToDayExpense.html";
   });
 
 function addExpenseToUI(expense) {
@@ -106,8 +118,10 @@ function addExpenseToUI(expense) {
   let descriptionTextNode = document.createTextNode(expense.description);
   let categoryTextNode = document.createTextNode(expense.category);
   let liNode = document.createElement("li");
+  liNode.classList.add("expense-item");
   let buttonText = document.createTextNode("Delete");
   let buttonNode = document.createElement("button");
+  buttonNode.classList.add("btn", "delete-btn");
   buttonNode.setAttribute("expense_id", expense.id);
   buttonNode.appendChild(buttonText);
   liNode.appendChild(amountTextNode);
@@ -183,9 +197,9 @@ function premiumUser(isPremium) {
 
   if (isPremium) {
     premiumBtn.style.display = "none";
-    premiumStatus.style.display = "block";
+    premiumStatus.style.display = "flex";
   } else {
-    premiumBtn.style.display = "block";
+    premiumBtn.style.display = "flex";
     premiumStatus.style.display = "none";
   }
 }

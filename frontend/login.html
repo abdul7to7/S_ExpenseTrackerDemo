@@ -5,37 +5,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
   </head>
-  <link rel="stylesheet" href="./style.css" />
+  <link rel="stylesheet" href="./login.css" />
   <body>
     <div class="mainContainer">
+      <h2 id="loginHeading">Login</h2>
       <div class="formContainer">
-        <form class="signUpForm" id="loginForm">
-          <div class="flexSpaceBetween">
-            <label for="loginMail">Email</label>
-            <input type="mail" name="mail" id="loginMail" required />
+        <form class="loginForm" id="loginForm">
+          <div class="loginFormItem flexSpaceBetween">
+            <input
+              type="text"
+              name="mail"
+              id="loginMail"
+              placeholder="Usermail"
+            />
           </div>
-          <div class="flexSpaceBetween">
-            <label for="loginPassword">Password</label>
-            <input type="text" name="password" id="loginPassword" required />
+          <div class="loginFormItem flexSpaceBetween">
+            <input
+              type="password"
+              name="password"
+              id="loginPassword"
+              placeholder="Password"
+              required
+            />
           </div>
-          <div class="flexCenter">
-            <button type="submit" id="loginButton">Login</button>
+          <div class="loginFormItem flexCenter">
+            <button class="btn" type="submit" id="loginButton">Login</button>
           </div>
         </form>
       </div>
-      <p>
-        Register Here
-        <a href="./signup.html">Sign up</a>
-      </p>
+
+      <div>
+        <p>
+          Don't have an account?
+          <a href="./signup.html">Register</a>
+        </p>
+        <a id="forgot-password">Forgot Password</a>
+        <form id="forgot-password-form" style="display: none">
+          <label>Enter email</label>
+          <input type="text" name="mail" id="forgot-password-mail" />
+          <button class="btn" id="send-link-btn">Send Link</button>
+        </form>
+      </div>
     </div>
-    <div>
-      <button id="forget-password">Forget Password</button>
-      <form id="forget-password-form" style="display: none">
-        <label>Enter email</label>
-        <input type="text" name="mail" id="forget-password-mail" />
-        <button>Send Link</button>
-      </form>
-    </div>
-    <script src="./login.js"></script>
   </body>
+  <script src="./login.js"></script>
 </html>

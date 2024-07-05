@@ -12,6 +12,7 @@ exports.getAllExpenses = async (req, res, next) => {
       user: {
         username: req.user.username,
         isPremium: req.user.isPremium,
+        totalExpense: req.user.totalExpense,
       },
     });
   } catch (e) {

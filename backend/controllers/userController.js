@@ -90,8 +90,8 @@ exports.forgotPassword = async (req, res, next) => {
   const sendSmtpEmail = {
     to: [
       {
-        email: "abdul7to7@gmail.com",
-        // email: req.body.mail,
+        // email: "abdul7to7@gmail.com",
+        email: req.body.mail,
         // name: 'User Name' // Optionally, you can add a name
       },
     ],
@@ -137,8 +137,10 @@ exports.getResetPassword = async (req, res, next) => {
 
 exports.postResetPassword = async (req, res, next) => {
   const fp = await ForgotPassword.findOne({ where: { id: req.body.uuid } });
-  await fp.update({ isActive: false });
+  if (!fp.isActive)
+    return res.json({ message: "link invalid", success: false });
   const hashed = await bcrypt.hash(req.body.password, 10);
+  await fp.update({ isActive: false });
   await User.update({ password: hashed }, { where: { id: fp.userId } });
   res.send("password reset successfully");
 };

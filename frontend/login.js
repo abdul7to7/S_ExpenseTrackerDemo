@@ -28,15 +28,15 @@ document.getElementById("loginForm")?.addEventListener("submit", (e) => {
     });
 });
 
-document.getElementById("forget-password").addEventListener("click", () => {
-  document.getElementById("forget-password-form").style.display = "block";
+document.getElementById("forgot-password").addEventListener("click", () => {
+  document.getElementById("forgot-password-form").style.display = "block";
 });
 
 document
-  .getElementById("forget-password-form")
+  .getElementById("forgot-password-form")
   ?.addEventListener("submit", (e) => {
     e.preventDefault();
-    const mail = document.getElementById("forget-password-mail").value;
+    const mail = document.getElementById("forgot-password-mail").value;
     fetch("http://localhost:4000/user/forgot-password", {
       method: "POST",
       headers: {

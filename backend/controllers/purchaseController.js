@@ -16,7 +16,10 @@ exports.buyMemberShip = (req, res, next) => {
     rzp.orders.create({ amount, currency: "INR" }, (err, rzpOrder) => {
       if (err) {
         // console.log("errrprrr->>>>>", err);
-        throw new Error(JSON.stringify(err));
+        // throw new Error(JSON.stringify(err));
+        res
+          .status(500)
+          .json({ success: false, message: `Something went wrong ${err}` });
       }
       Order.create({
         userId: req.user.id,
