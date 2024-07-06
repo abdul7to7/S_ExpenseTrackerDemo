@@ -49,6 +49,8 @@
             Add Expense
           </button>
         </form>
+        <h4 class="blockHeading">Recently added</h4>
+        <ul id="recent-expense-list"></ul>
       </div>
       <div class="expenseContainer">
         <h2 class="blockHeading">Expenses</h2>
@@ -57,6 +59,15 @@
           <button class="btn prev" id="prevPage">Prev</button>
           <button class="btn" id="currentPage">1</button>
           <button class="btn next" id="nextPage">Next</button>
+          <div id="rowSize" class="rowSize">
+            <p class="rowSizeTitle">Rows per page</p>
+            <select class="rowSizeSelect" id="rowSizeSelect">
+              <option value="5">5</option>
+              <option value="10">10</option>
+              <option value="15">15</option>
+              <option value="30">30</option>
+            </select>
+          </div>
         </div>
       </div>
 
@@ -65,11 +76,11 @@
         <div id="premium">
           <p id="premiumStatus">You are a premium user</p>
 
-          <button id="show-leaderboard-btn" class="btn">
-            Show LeaderBoard
-          </button>
           <button id="dayToDayExpenseBtn" class="btn">
             Day to day expense
+          </button>
+          <button id="show-leaderboard-btn" class="btn">
+            Show LeaderBoard
           </button>
           <ul id="leaderboard-list"></ul>
         </div>

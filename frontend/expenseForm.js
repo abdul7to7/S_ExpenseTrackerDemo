@@ -1,8 +1,13 @@
 //Dom Loading expenses
 let currentPage = 1;
+let lastPage = false;
 
 document.addEventListener("DOMContentLoaded", async () => {
-  let data = await getExpensesForPage(1);
+  let pageSize = localStorage.getItem("pageSize");
+  if (pageSize == null) pageSize = 5;
+  document.getElementById("rowSizeSelect").value = pageSize;
+
+  let data = await getExpensesForPage(1, pageSize);
   if (data && data.expenses) {
     data.expenses.forEach((expense) => {
       addExpenseToUI(expense);
@@ -16,6 +21,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   else prevBtn.disabled = false;
   if (data.lastPage) nextBtn.disabled = true;
   else nextBtn.disabled = false;
+  lastPage = data.lastPage;
 
   premiumUser(data.user.isPremium);
 });
@@ -25,10 +31,16 @@ document.getElementById("btns").addEventListener("click", async (e) => {
 
   if (e.target.classList.contains("prev")) {
     if (currentPage > 1) {
-      data = await getExpensesForPage(--currentPage);
+      data = await getExpensesForPage(
+        --currentPage,
+        localStorage.getItem("pageSize")
+      );
     }
   } else if (e.target.classList.contains("next")) {
-    data = await getExpensesForPage(++currentPage);
+    data = await getExpensesForPage(
+      ++currentPage,
+      localStorage.getItem("pageSize")
+    );
   }
   if (data && data.expenses) {
     const expenseListNode = document.getElementById("expense-list");
@@ -45,8 +57,14 @@ document.getElementById("btns").addEventListener("click", async (e) => {
   else prevBtn.disabled = false;
   if (data.lastPage) nextBtn.disabled = true;
   else nextBtn.disabled = false;
+  lastPage = data.lastPage;
   const currentPageEl = document.getElementById("currentPage");
   currentPageEl.textContent = currentPage;
+});
+
+document.getElementById("rowSizeSelect").addEventListener("change", (e) => {
+  localStorage.setItem("pageSize", e.target.value);
+  window.location.reload();
 });
 
 //adding an expense
@@ -59,7 +77,8 @@ document.getElementById("expenseForm").addEventListener("submit", async (e) => {
   let response = await postExpense({ amount, description, category });
   if (response) {
     console.log(response.message);
-    addExpenseToUI(response.expense);
+    addExpenseToUI(response.expense, "recent");
+    if (lastPage) addExpenseToUI(response.expense);
   }
 });
 
@@ -151,8 +170,13 @@ document
     document.location = "./dayToDayExpense.html";
   });
 
-function addExpenseToUI(expense) {
-  const expenseListNode = document.getElementById("expense-list");
+function addExpenseToUI(expense, recent) {
+  let toAdd = recent ? `recent-expense-list` : `expense-list`;
+
+  const expenseListNode = document.getElementById(toAdd);
+  if (recent && expenseListNode.childNodes.length >= 3) {
+    expenseListNode.removeChild(expenseListNode.firstChild);
+  }
 
   let amountTextNode = document.createTextNode(expense.amount);
   let descriptionTextNode = document.createTextNode(expense.description);
@@ -214,10 +238,10 @@ async function getAllExpenses() {
   }
 }
 
-async function getExpensesForPage(page) {
+async function getExpensesForPage(page, pageSize = 5) {
   try {
     let response = await fetch(
-      `http://localhost:4000/expense/get_expenses/${page}`,
+      `http://localhost:4000/expense/get_expenses/?page=${page}&size=${pageSize}`,
       {
         headers: {
           token: localStorage.getItem("token"),

@@ -24,15 +24,17 @@ exports.getAllExpenses = async (req, res, next) => {
 
 exports.getAllExpensesByPage = async (req, res, next) => {
   try {
-    let page = req.params.page;
+    let page = Number(req.query.page);
+    let size = Number(req.query.size);
+    console.log(req.query.page, req.query.size);
     const { count, rows } = await Expense.findAndCountAll(
       {
-        limit: 5,
-        offset: (page - 1) * 5,
+        limit: size,
+        offset: (page - 1) * size,
       },
       { where: { userId: req.user.id } }
     );
-    console.log(count);
+    // console.log(count);
     return res.status(201).json({
       success: true,
       expenses: rows,
@@ -41,7 +43,7 @@ exports.getAllExpensesByPage = async (req, res, next) => {
         isPremium: req.user.isPremium,
         totalExpense: req.user.totalExpense,
       },
-      lastPage: Math.ceil(count / 5) - page > 0 ? false : true,
+      lastPage: Math.ceil(count / size) - page > 0 ? false : true,
     });
   } catch (e) {
     return res
