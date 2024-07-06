@@ -22,6 +22,34 @@ exports.getAllExpenses = async (req, res, next) => {
   }
 };
 
+exports.getAllExpensesByPage = async (req, res, next) => {
+  try {
+    let page = req.params.page;
+    const { count, rows } = await Expense.findAndCountAll(
+      {
+        limit: 5,
+        offset: (page - 1) * 5,
+      },
+      { where: { userId: req.user.id } }
+    );
+    console.log(count);
+    return res.status(201).json({
+      success: true,
+      expenses: rows,
+      user: {
+        username: req.user.username,
+        isPremium: req.user.isPremium,
+        totalExpense: req.user.totalExpense,
+      },
+      lastPage: Math.ceil(count / 5) - page > 0 ? false : true,
+    });
+  } catch (e) {
+    return res
+      .status(500)
+      .json({ success: false, message: `Something went wrong ${e}` });
+  }
+};
+
 exports.addExpense = async (req, res, next) => {
   const t = await sequelize.transaction();
   try {

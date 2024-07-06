@@ -1,12 +1,52 @@
 //Dom Loading expenses
+let currentPage = 1;
+
 document.addEventListener("DOMContentLoaded", async () => {
-  let data = await getAllExpenses();
+  let data = await getExpensesForPage(1);
   if (data && data.expenses) {
     data.expenses.forEach((expense) => {
       addExpenseToUI(expense);
     });
   }
+  const prevBtn = document.getElementById("prevPage");
+  const nextBtn = document.getElementById("nextPage");
+  const currentPageEl = document.getElementById("currentPage");
+  currentPageEl.textContent = currentPage;
+  if (currentPage == 1) prevBtn.disabled = true;
+  else prevBtn.disabled = false;
+  if (data.lastPage) nextBtn.disabled = true;
+  else nextBtn.disabled = false;
+
   premiumUser(data.user.isPremium);
+});
+
+document.getElementById("btns").addEventListener("click", async (e) => {
+  let data;
+
+  if (e.target.classList.contains("prev")) {
+    if (currentPage > 1) {
+      data = await getExpensesForPage(--currentPage);
+    }
+  } else if (e.target.classList.contains("next")) {
+    data = await getExpensesForPage(++currentPage);
+  }
+  if (data && data.expenses) {
+    const expenseListNode = document.getElementById("expense-list");
+    while (expenseListNode.childNodes.length > 0)
+      expenseListNode.removeChild(expenseListNode.lastChild);
+    data.expenses.forEach((expense) => {
+      addExpenseToUI(expense);
+    });
+  }
+  //btns prev and next
+  const prevBtn = document.getElementById("prevPage");
+  const nextBtn = document.getElementById("nextPage");
+  if (currentPage == 1) prevBtn.disabled = true;
+  else prevBtn.disabled = false;
+  if (data.lastPage) nextBtn.disabled = true;
+  else nextBtn.disabled = false;
+  const currentPageEl = document.getElementById("currentPage");
+  currentPageEl.textContent = currentPage;
 });
 
 //adding an expense
@@ -167,6 +207,23 @@ async function getAllExpenses() {
         token: localStorage.getItem("token"),
       },
     });
+    response = await response.json();
+    return response;
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+async function getExpensesForPage(page) {
+  try {
+    let response = await fetch(
+      `http://localhost:4000/expense/get_expenses/${page}`,
+      {
+        headers: {
+          token: localStorage.getItem("token"),
+        },
+      }
+    );
     response = await response.json();
     return response;
   } catch (e) {
