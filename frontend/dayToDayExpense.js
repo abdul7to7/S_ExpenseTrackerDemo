@@ -2,19 +2,19 @@ document.addEventListener("DOMContentLoaded", async (e) => {
   document.getElementById("currentYear").textContent = new Date().getFullYear();
   const table = document.getElementById("mainTable");
   let td;
-  let data = await getAllExpenses();
+  let data = await getExpensesByPage();
   let total = 0;
-  let yearlyExpense = new Array(12).fill(0);
+  let monthlyExpense = new Array(12).fill(0);
   let currentDate = new Date();
   data.expenses.forEach((expense) => {
     addExpenseToUI(expense);
     total += expense.amount;
     let createdDate = new Date(expense.createdAt);
     if (createdDate.getFullYear() == currentDate.getFullYear()) {
-      yearlyExpense[createdDate.getMonth()] += expense.amount;
+      monthlyExpense[createdDate.getMonth()] += expense.amount;
     }
   });
-  addToYearlyTableUI(yearlyExpense);
+  addTomonthlyTableUI(monthlyExpense);
   console.log(currentDate.getMonth());
   const newRow = table.insertRow(-1);
   const newCell = newRow.insertCell(0);
@@ -24,15 +24,18 @@ document.addEventListener("DOMContentLoaded", async (e) => {
   newRow.style.backgroundColor = "lightblue";
 
   console.log(data);
-  console.log(yearlyExpense);
+  console.log(monthlyExpense);
 });
 
-async function getAllExpenses() {
-  let data = await fetch("http://localhost:4000/expense/get_expenses", {
-    headers: {
-      token: localStorage.getItem("token"),
-    },
-  });
+async function getExpensesByPage() {
+  let data = await fetch(
+    "http://localhost:4000/expense/get_expenses?page=1&size=10",
+    {
+      headers: {
+        token: localStorage.getItem("token"),
+      },
+    }
+  );
   data = await data.json();
   return data;
 }
@@ -59,10 +62,10 @@ function addExpenseToUI(expense) {
   table.appendChild(tr);
 }
 
-function addToYearlyTableUI(yearlyExpense) {
-  let table = document.getElementById("yearlyExpenseTable");
+function addTomonthlyTableUI(monthlyExpense) {
+  let table = document.getElementById("monthlyExpenseTable");
 
-  yearlyExpense.forEach((amount, month) => {
+  monthlyExpense.forEach((amount, month) => {
     if (amount != 0) {
       let tr = document.createElement("tr");
       let td1 = document.createElement("td");

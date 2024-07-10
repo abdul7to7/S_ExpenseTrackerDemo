@@ -49,12 +49,18 @@
             Add Expense
           </button>
         </form>
-        <h4 class="blockHeading">Recently added</h4>
-        <ul id="recent-expense-list"></ul>
+        <h4
+          class="recentlyAddedHeading"
+          id="recentlyAddedHeading"
+          style="display: none"
+        >
+          Recently added
+        </h4>
+        <ul id="recent-expense-list" class="expense-list-main"></ul>
       </div>
       <div class="expenseContainer">
         <h2 class="blockHeading">Expenses</h2>
-        <ul id="expense-list"></ul>
+        <ul id="expense-list" class="expense-list-main"></ul>
         <div class="btns" id="btns">
           <button class="btn prev" id="prevPage">Prev</button>
           <button class="btn" id="currentPage">1</button>
@@ -65,7 +71,7 @@
               <option value="5">5</option>
               <option value="10">10</option>
               <option value="15">15</option>
-              <option value="30">30</option>
+              <option value="25">25</option>
             </select>
           </div>
         </div>
@@ -77,8 +83,9 @@
           <p id="premiumStatus">You are a premium user</p>
 
           <button id="dayToDayExpenseBtn" class="btn">
-            Day to day expense
+            View Expense Report
           </button>
+          <button id="downloadReport" class="btn">Download Report</button>
           <button id="show-leaderboard-btn" class="btn">
             Show LeaderBoard
           </button>
@@ -87,7 +94,7 @@
         <button id="buy-premium-btn" class="btn">Buy Premium</button>
       </div>
     </div>
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script src="./expenseForm.js"></script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   </body>
 </html>

@@ -27,13 +27,11 @@ exports.getAllExpensesByPage = async (req, res, next) => {
     let page = Number(req.query.page);
     let size = Number(req.query.size);
     console.log(req.query.page, req.query.size);
-    const { count, rows } = await Expense.findAndCountAll(
-      {
-        limit: size,
-        offset: (page - 1) * size,
-      },
-      { where: { userId: req.user.id } }
-    );
+    const { count, rows } = await Expense.findAndCountAll({
+      limit: size,
+      offset: (page - 1) * size,
+      where: { userId: req.user.id },
+    });
     // console.log(count);
     return res.status(201).json({
       success: true,

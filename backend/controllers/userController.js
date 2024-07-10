@@ -124,12 +124,27 @@ exports.getResetPassword = async (req, res, next) => {
   const fp = await ForgotPassword.findOne({ where: { id: uuid } });
   if (fp && fp.isActive) {
     res.status(201).send(`
+      <html>
+      <head>
+      <style>
+      </style>
+      </head>
+      <body>
+      <div class="mainContainer">
+      <h2>Enter new password</h2>
+      <div class="formContainer">
       <form action="http://localhost:4000/user/resetpassword" method="POST">
       <input type="hidden" name="uuid" value="${uuid}" />
-      <label for="password">New Password</label>
       <input type="password" name="password" required />
-      <button type="submit">Reset Password</button>
-    </form>`);
+      <button type="submit" class="btn">Reset Password</button>
+    </form>
+    </div>
+    </div>
+    </body>
+    <script>
+    </script>
+    </html>
+    `);
   } else {
     res.status(500).json({ message: "Invalid reset password link" });
   }

@@ -4,10 +4,13 @@ let lastPage = false;
 
 document.addEventListener("DOMContentLoaded", async () => {
   let pageSize = localStorage.getItem("pageSize");
-  if (pageSize == null) pageSize = 5;
+  if (pageSize === null) {
+    pageSize = 5;
+    localStorage.setItem("pageSize", pageSize);
+  }
   document.getElementById("rowSizeSelect").value = pageSize;
 
-  let data = await getExpensesForPage(1, pageSize);
+  let data = await getExpensesForPage(currentPage, pageSize);
   if (data && data.expenses) {
     data.expenses.forEach((expense) => {
       addExpenseToUI(expense);
@@ -55,14 +58,15 @@ document.getElementById("btns").addEventListener("click", async (e) => {
   const nextBtn = document.getElementById("nextPage");
   if (currentPage == 1) prevBtn.disabled = true;
   else prevBtn.disabled = false;
-  if (data.lastPage) nextBtn.disabled = true;
+  if (data?.lastPage) nextBtn.disabled = true;
   else nextBtn.disabled = false;
-  lastPage = data.lastPage;
+  lastPage = data?.lastPage;
   const currentPageEl = document.getElementById("currentPage");
   currentPageEl.textContent = currentPage;
 });
 
 document.getElementById("rowSizeSelect").addEventListener("change", (e) => {
+  e.preventDefault();
   localStorage.setItem("pageSize", e.target.value);
   window.location.reload();
 });
@@ -170,12 +174,50 @@ document
     document.location = "./dayToDayExpense.html";
   });
 
+document
+  .getElementById("downloadReport")
+  .addEventListener("click", async (e) => {
+    e.preventDefault();
+    let response = await fetch("http://localhost:4000/files/download/report", {
+      headers: {
+        "Content-Type": "application/json",
+        token: localStorage.getItem("token"),
+      },
+    });
+    const data = await response.json();
+    const url = data.url;
+
+    const downloadResponse = await fetch(url);
+    const blob = await downloadResponse.blob();
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    let filename = data.url
+      .split("amazonaws.com/")[1]
+      .split("?AWSAccessKeyId")[0];
+    link.download = filename;
+
+    link.click();
+    console.log(data);
+  });
+
 function addExpenseToUI(expense, recent) {
   let toAdd = recent ? `recent-expense-list` : `expense-list`;
 
   const expenseListNode = document.getElementById(toAdd);
   if (recent && expenseListNode.childNodes.length >= 3) {
     expenseListNode.removeChild(expenseListNode.firstChild);
+  }
+  if (
+    !recent &&
+    expenseListNode.childNodes.length >= localStorage.getItem("pageSize")
+  ) {
+    const nextBtn = document.getElementById("nextPage");
+    nextBtn.disabled = false;
+    nextBtn.click();
+    return;
+  }
+  if (recent) {
+    document.getElementById("recentlyAddedHeading").style.display = "block";
   }
 
   let amountTextNode = document.createTextNode(expense.amount);
@@ -194,13 +236,21 @@ function addExpenseToUI(expense, recent) {
   liNode.appendChild(document.createTextNode(" || "));
   liNode.appendChild(categoryTextNode);
   liNode.appendChild(document.createTextNode(" "));
-  liNode.appendChild(buttonNode);
+  if (!recent) liNode.appendChild(buttonNode);
+
   expenseListNode.appendChild(liNode);
 }
 
 function removeFromUI(targetElement) {
   let parent = targetElement.parentNode.parentNode;
   parent.removeChild(targetElement.parentNode);
+  if (parent.childNodes.length == 0) {
+    if (currentPage == 1) {
+      window.location.reload();
+      return;
+    }
+    document.getElementById("prevPage").click();
+  }
 }
 
 async function postExpense(expense) {
@@ -238,7 +288,7 @@ async function getAllExpenses() {
   }
 }
 
-async function getExpensesForPage(page, pageSize = 5) {
+async function getExpensesForPage(page, pageSize) {
   try {
     let response = await fetch(
       `http://localhost:4000/expense/get_expenses/?page=${page}&size=${pageSize}`,
@@ -286,7 +336,7 @@ function premiumUser(isPremium) {
 }
 
 async function getLeaderboard() {
-  let data = await fetch("http://localhost:4000/expense/leaderboard", {
+  let data = await fetch("http://localhost:4000/expense_features/leaderboard", {
     headers: {
       token: localStorage.getItem("token"),
     },
