@@ -13,7 +13,15 @@ require("dotenv").config();
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: [
+      "https://s-expense-tracker-demo-frontend-h6cqy7ep3-abdul7to7s-projects.vercel.app/",
+    ],
+    methods: ["POST", "GET"],
+    credentials: true,
+  })
+);
 app.use(helmet());
 app.use(compression());
 
