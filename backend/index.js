@@ -14,7 +14,6 @@ require("dotenv").config();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cors());
-app.options('*', cors()); // Include this line to handle preflight requests
 app.use(helmet());
 app.use(compression());
 
