@@ -1,10 +1,12 @@
+const server = "https://s-expense-tracker-demo-backend.vercel.app";
+
 document.getElementById("loginForm")?.addEventListener("submit", (e) => {
   e.preventDefault();
   console.log("button clicked");
   const mail = document.getElementById("loginMail").value;
   const password = document.getElementById("loginPassword").value;
   console.log(mail, password);
-  fetch("http://localhost:4000/user/login", {
+  fetch(`${server}/user/login`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -37,7 +39,7 @@ document
   ?.addEventListener("submit", (e) => {
     e.preventDefault();
     const mail = document.getElementById("forgot-password-mail").value;
-    fetch("http://localhost:4000/user/forgot-password", {
+    fetch(`${server}/user/forgot-password`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

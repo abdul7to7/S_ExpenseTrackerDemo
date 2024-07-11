@@ -1,3 +1,5 @@
+const server = "https://s-expense-tracker-demo-backend.vercel.app";
+
 //Dom Loading expenses
 let currentPage = 1;
 let lastPage = false;
@@ -104,7 +106,7 @@ document.getElementById("expense-list").addEventListener("click", async (e) => {
 document
   .getElementById("buy-premium-btn")
   .addEventListener("click", async (e) => {
-    let newOrder = await fetch("http://localhost:4000/purchase/buymembership", {
+    let newOrder = await fetch(`${server}/purchase/buymembership`, {
       headers: {
         "Content-Type": "application/json",
         token: localStorage.getItem("token"),
@@ -116,7 +118,7 @@ document
       key: newOrder.key_id,
       order_id: newOrder.rzpOrder.id,
       handler: function (response) {
-        fetch("http://localhost:4000/purchase/verifyPayment", {
+        fetch(`${server}/purchase/verifyPayment`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -178,7 +180,7 @@ document
   .getElementById("downloadReport")
   .addEventListener("click", async (e) => {
     e.preventDefault();
-    let response = await fetch("http://localhost:4000/files/download/report", {
+    let response = await fetch(`${server}/files/download/report`, {
       headers: {
         "Content-Type": "application/json",
         token: localStorage.getItem("token"),
@@ -255,7 +257,7 @@ function removeFromUI(targetElement) {
 
 async function postExpense(expense) {
   try {
-    let response = await fetch("http://localhost:4000/expense/add_expense", {
+    let response = await fetch(`${server}/expense/add_expense`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -276,7 +278,7 @@ async function postExpense(expense) {
 
 async function getAllExpenses() {
   try {
-    let response = await fetch("http://localhost:4000/expense/get_expenses", {
+    let response = await fetch(`${server}/expense/get_expenses`, {
       headers: {
         token: localStorage.getItem("token"),
       },
@@ -291,7 +293,7 @@ async function getAllExpenses() {
 async function getExpensesForPage(page, pageSize) {
   try {
     let response = await fetch(
-      `http://localhost:4000/expense/get_expenses/?page=${page}&size=${pageSize}`,
+      `${server}/expense/get_expenses/?page=${page}&size=${pageSize}`,
       {
         headers: {
           token: localStorage.getItem("token"),
@@ -307,14 +309,11 @@ async function getExpensesForPage(page, pageSize) {
 
 async function deleteExpense(id) {
   try {
-    let response = await fetch(
-      `http://localhost:4000/expense/delete_expense/${id}`,
-      {
-        headers: {
-          token: localStorage.getItem("token"),
-        },
-      }
-    );
+    let response = await fetch(`${server}/expense/delete_expense/${id}`, {
+      headers: {
+        token: localStorage.getItem("token"),
+      },
+    });
     response = await response.json();
     return response;
   } catch (e) {
@@ -336,7 +335,7 @@ function premiumUser(isPremium) {
 }
 
 async function getLeaderboard() {
-  let data = await fetch("http://localhost:4000/expense_features/leaderboard", {
+  let data = await fetch(`${server}/expense_features/leaderboard`, {
     headers: {
       token: localStorage.getItem("token"),
     },

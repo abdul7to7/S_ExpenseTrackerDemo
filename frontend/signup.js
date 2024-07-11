@@ -1,3 +1,5 @@
+const server = "https://s-expense-tracker-demo-backend.vercel.app";
+
 document.getElementById("signUpForm")?.addEventListener("submit", (e) => {
   e.preventDefault();
   console.log("button clicked");
@@ -5,7 +7,7 @@ document.getElementById("signUpForm")?.addEventListener("submit", (e) => {
   const mail = document.getElementById("signUpMail").value;
   const password = document.getElementById("signUpPassword").value;
   console.log(username, mail, password);
-  fetch("http://localhost:4000/user/signup", {
+  fetch(`${server}/user/signup`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

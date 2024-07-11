@@ -1,3 +1,5 @@
+const server = "https://s-expense-tracker-demo-backend.vercel.app";
+
 document.addEventListener("DOMContentLoaded", async (e) => {
   document.getElementById("currentYear").textContent = new Date().getFullYear();
   const table = document.getElementById("mainTable");
@@ -28,14 +30,11 @@ document.addEventListener("DOMContentLoaded", async (e) => {
 });
 
 async function getExpensesByPage() {
-  let data = await fetch(
-    "http://localhost:4000/expense/get_expenses?page=1&size=10",
-    {
-      headers: {
-        token: localStorage.getItem("token"),
-      },
-    }
-  );
+  let data = await fetch(`${server}/expense/get_expenses?page=1&size=10`, {
+    headers: {
+      token: localStorage.getItem("token"),
+    },
+  });
   data = await data.json();
   return data;
 }
