@@ -13,7 +13,6 @@ require("dotenv").config();
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(cors());
 app.use(helmet());
 app.use(compression());
 
@@ -22,6 +21,8 @@ const accessLogStream = fs.createWriteStream(
   { flags: "a" }
 );
 app.use(morgan("combined", { stream: accessLogStream }));
+
+app.use(cors());
 
 const userRoutes = require("./Routes/userRoutes");
 const expenseRoutes = require("./Routes/expenseRoutes");
