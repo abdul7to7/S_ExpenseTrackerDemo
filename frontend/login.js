@@ -6,16 +6,11 @@ document.getElementById("loginForm")?.addEventListener("submit", (e) => {
   const mail = document.getElementById("loginMail").value;
   const password = document.getElementById("loginPassword").value;
   console.log(mail, password);
-  fetch(`${server}/user/login`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
+  axios
+    .post(`${server}/user/login`, {
       mail: mail,
       password: password,
-    }),
-  })
+    })
     .then((response) => {
       return response.json();
     })
